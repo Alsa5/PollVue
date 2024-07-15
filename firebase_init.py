@@ -3,6 +3,9 @@ import base64
 import json
 import firebase_admin
 from firebase_admin import credentials
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def initialize_firebase():
     firebase_key = os.getenv("FIREBASE_KEY")
