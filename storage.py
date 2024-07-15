@@ -1,3 +1,4 @@
+import random
 import praw
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -27,10 +28,21 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
+# List of valid states in India
+valid_states = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana",
+    "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+    "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+    "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+]
+
 # Function to fetch data about Indian politics from Reddit and store it in Firebase
 def fetch_and_store_indian_politics_data(subreddit_name):
     subreddit = reddit.subreddit(subreddit_name)
     for submission in subreddit.search('flair:Politics OR flair:"Indian Politics" OR flair:"Political Discussion"', sort='new', limit=100):
+        # Randomly select a state
+        random_state = random.choice(valid_states)
+        
         # Extract relevant data
         data = {
             'title': submission.title,
@@ -41,7 +53,7 @@ def fetch_and_store_indian_politics_data(subreddit_name):
             'num_comments': submission.num_comments,
             'body': submission.selftext,
             'author': submission.author.name if submission.author else None,
-            'location': submission.author_flair_text if submission.author_flair_text else None
+            'location': random_state  # Set random state as the location
         }
         # Store data in Firestore
         db.collection('politics100').document(submission.id).set(data)

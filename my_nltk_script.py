@@ -30,18 +30,8 @@ def analyze_sentiment(text):
         text_without_stopwords = ' '.join([word for word in text.split() if word.lower() not in stopwords.words('english')])
         blob = TextBlob(text_without_stopwords)
         polarity = blob.sentiment.polarity
-        if polarity >= 0.5:
-            support_level = "Strongly Supportive"
-        elif polarity > 0:
-            support_level = "Supportive"
-        elif polarity == 0:
-            support_level = "Neutral"
-        elif polarity >= -0.5:
-            support_level = "Opposed"
-        else:
-            support_level = "Strongly Opposed"
-        return polarity, support_level
-    return 0, "Neutral"
+        return polarity
+    return 0
 
 def main():
     st.markdown("<h1 style='text-align: center;'>Political Statistics</h1>", unsafe_allow_html=True)
@@ -51,7 +41,7 @@ def main():
 
     for entry in data:
         location = entry.get('location', 'Unknown')
-        polarity, _ = analyze_sentiment(entry.get('title', ''))
+        polarity = analyze_sentiment(entry.get('title', ''))
         if location not in location_sentiments:
             location_sentiments[location] = []
         location_sentiments[location].append(polarity)
@@ -77,6 +67,7 @@ def main():
     # Plotting using seaborn for horizontal bar graph
     fig, ax = plt.subplots(figsize=(10, 8))
     sns.barplot(x='Polarity', y='State', data=df, palette='viridis', ax=ax)
+    ax.set_xlim(-1, 1)  # Set x-axis limits from -1 to 1
     ax.set_xlabel('Polarity')
     ax.set_ylabel('State')
     ax.set_title('Sentiment Polarity by State')
