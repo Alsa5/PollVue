@@ -3,6 +3,7 @@ import dashboard
 import new
 import login
 import my_nltk_script
+from firebase_init import initialize_firebase  # Ensure Firebase is initialized
 
 # Main page layout
 st.set_page_config(page_title="PollVue", layout="wide")
@@ -20,6 +21,3 @@ elif page == "Login/Signup":
     login.main()
 elif page == "Statistics":
     my_nltk_script.main()
-
-
-

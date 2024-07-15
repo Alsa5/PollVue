@@ -1,12 +1,11 @@
 import streamlit as st
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import firestore
 import pandas as pd
 from datetime import datetime
+from firebase_init import initialize_firebase  # Import the Firebase initialization
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate("./serviceAccountKey.json")
-    firebase_admin.initialize_app(cred)
+initialize_firebase()  # Ensure Firebase is initialized
 db = firestore.client()
 
 def fetch_posts_from_firestore(collection_name, limit=30):
@@ -30,7 +29,6 @@ def fetch_posts_from_firestore(collection_name, limit=30):
 def main():
     st.markdown("<h1 style='text-align: center;'>PollVue</h1>", unsafe_allow_html=True)
     st.image("https://www.imf.org/external/pubs/ft/fandd/2020/06/images/frieden-1600.jpg", caption="Indian Politics Dashboard", use_column_width=True)
-
 
     limit = st.sidebar.slider("Number of Posts", min_value=10, max_value=30, value=10)
 

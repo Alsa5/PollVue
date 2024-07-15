@@ -1,20 +1,8 @@
 import streamlit as st
-import firebase_admin
-from firebase_admin import credentials, auth
-import os
-import base64
-import json
+from firebase_admin import auth
+from firebase_init import initialize_firebase
 
-# Decode the Firebase key from the environment variable
-firebase_key = os.getenv("FIREBASE_KEY")
-
-if firebase_key:
-    decoded_key = base64.b64decode(firebase_key).decode()
-    cred = credentials.Certificate(json.loads(decoded_key))
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred)
-else:
-    st.error("FIREBASE_KEY environment variable not set")
+initialize_firebase()  # Ensure Firebase is initialized
 
 def register_user(email, password):
     try:
@@ -34,15 +22,6 @@ def login_user(email, password):
         st.error(f"Error logging in: {e.message}")
     except Exception as e:
         st.error(f"Error logging in: {e}")
-
-def list_user_emails():
-    try:
-        page = auth.list_users()
-        st.write("List of Registered User Emails:")
-        for user in page.iterate_all():
-            st.write(user.email)
-    except Exception as e:
-        st.error(f"Error listing users: {e}")
 
 def main():
     st.title("PollVue")
